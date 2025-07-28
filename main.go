@@ -11,7 +11,7 @@ import (
 type cliCommand struct {
     name        string
     description string
-    callback    func() error
+    callback    func(arg string) error
 }
 
 var commands map[string]cliCommand
@@ -39,6 +39,16 @@ func init() {
             description: "List previous 20 locations",
             callback:    navigation.CommandMapb,
         },
+        "explore": {
+            name:        "explore",
+            description: "Explore selected location",
+            callback:    navigation.CommandExplore,
+        },
+        "catch": {
+            name:        "catch",
+            description: "Try catching a specified pokemon",
+            callback:    navigation.CommandCatch,
+        },
     }
 }
 
@@ -48,11 +58,19 @@ func main() {
     for true {
         fmt.Print("Pokedex > ") 
         scanner.Scan()
-        command := scanner.Text()
+        fields := strings.Fields(scanner.Text())
+        if len(fields) > 2 {
+            fmt.Println("Unknown command")
+        }
+        command := fields[0]
+        arg := ""
+        if len(fields) == 2 {
+            arg = fields[1]
+        }
 
         comm, exists := commands[command]
         if exists {
-            comm.callback()
+            comm.callback(arg)
         } else {
             fmt.Println("Unknown command")
         }
@@ -60,13 +78,13 @@ func main() {
     
 }
 
-func commandExit() error {
+func commandExit(_ string) error {
     fmt.Println("Closing the Pokedex... Goodbye!")
     os.Exit(0)
     return nil
 }
 
-func commandHelp() error {
+func commandHelp(_ string) error {
     fmt.Println("Welcome to the Pokedex!")
     fmt.Println("Usage:")
     fmt.Println("")
