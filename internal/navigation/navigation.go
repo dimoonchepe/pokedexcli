@@ -82,6 +82,21 @@ type pokemonDetails struct {
 	IsDefault      bool   `json:"is_default"`
 	Order          int    `json:"order"`
 	Weight         int    `json:"weight"`
+	Stats []struct {
+		BaseStat int `json:"base_stat"`
+		Effort   int `json:"effort"`
+		Stat     struct {
+			Name string `json:"name"`
+			URL  string `json:"url"`
+		} `json:"stat"`
+	} `json:"stats"`
+	Types []struct {
+		Slot int `json:"slot"`
+		Type struct {
+			Name string `json:"name"`
+			URL  string `json:"url"`
+		} `json:"type"`
+	} `json:"types"`
 }
 
 
@@ -174,6 +189,38 @@ func CommandCatch(name string) error {
         fmt.Println(name, "escaped!")
     }
     return nil 
+}
+
+func CommandInspect(name string) error {
+    pokemon, exists := pokedex[name]
+    if !exists {
+        fmt.Println("You haven't caught", name, "yet!")
+        return nil
+    }
+    fmt.Println("Name:", name)
+    fmt.Println("Height:", pokemon.Height)
+    fmt.Println("Weight:", pokemon.Weight)
+    if len(pokemon.Stats) > 0 {
+        fmt.Println("Stats:")
+        for _, stat := range pokemon.Stats {
+            fmt.Printf("  -%s: %v\n", stat.Stat.Name, stat.BaseStat)
+        }
+    }
+    if len(pokemon.Types) > 0 {
+        fmt.Println("Types:")
+        for _, stat := range pokemon.Types {
+            fmt.Printf("  -%s\n", stat.Type.Name)
+        }
+    }
+    return nil
+}
+
+func CommandPokedex(_ string) error {
+    fmt.Println("Your Pokedex:")
+    for _, pokemon := range pokedex {
+        fmt.Println(" -", pokemon.Name)
+    }
+    return nil
 }
 
 func makeCachedRequest(url string) ([]byte, error) {

@@ -49,6 +49,16 @@ func init() {
             description: "Try catching a specified pokemon",
             callback:    navigation.CommandCatch,
         },
+        "inspect": {
+            name:        "inspect",
+            description: "Get stats of caught pokemon",
+            callback:    navigation.CommandInspect,
+        },
+        "pokedex": {
+            name:        "pokedex",
+            description: "List all caught pokemon",
+            callback:    navigation.CommandPokedex,
+        },
     }
 }
 
